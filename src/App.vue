@@ -1,14 +1,12 @@
 <script setup lang="ts">
 // import HelloWorld from './components/HelloWorld.vue'
-import Todo from './components/Todo.vue'
+import Todo from "./components/Todo.vue";
 </script>
 
 <template>
   <div>
     <Todo />
   </div>
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
-  
 </template>
 
 <style scoped>

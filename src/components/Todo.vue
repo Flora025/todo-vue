@@ -1,39 +1,81 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { Ref, ref, watch } from "vue";
+import { useTodoStore } from "../stores/todo";
+
+// FIN: 完成静态组件 + 调整样式
+//    一个title + 清除完成项 + listItem + add todo
+// TODO: 响应式: addItem -> checked -> progress -> clear ->
+let curItem: Ref<string> = ref("");
+
+// initialize todo items storage
+const todoStore = useTodoStore();
+todoStore.initFromLocalStorage();
+
+/** submit后将事件加入列表 */
+function addItem() {
+  const itemTxt = curItem.value;
+  curItem.value = ""; // clear input box
+
+  if (itemTxt.trim() !== "") {
+    todoStore.addToList(itemTxt);
+  }
+  console.log("@@@ ", itemTxt, " is added");
+}
+
+function handleClick() {
+  console.log("clicked!");
+  todoStore.itemList = todoStore.notCompletedList;
+}
 </script>
 
 <template>
   <div>
     <h1>Todos</h1>
-    <!-- TODO: 增加click事件 -->
-    <button class="clear">Clear completed todos</button>
+    <!-- FIN: 增加click事件 -->
+    <button class="clear" @click="handleClick">Clear completed todos</button>
 
     <div class="prog">
-      <!-- TODO: 响应式-->
-      <progress max="100" value="70">70%</progress>
+      <progress
+        :max="todoStore.itemList.length"
+        :value="todoStore.completedList.length"
+      ></progress>
       <p>
-        <!-- TODO: fill with variable-->
-        <b>someNum</b> out of <b> total num of todos </b> completed
+        <b>{{ todoStore.completedList.length }}</b> out of
+        <b>{{ todoStore.itemList.length }}</b> completed
       </p>
     </div>
 
-    <!-- TODO: 遍历生成items -->
+    <!-- FIN: 遍历生成items -->
     <ul class="todos">
-      <li class="todo">
-        <!-- TODO: 根据checked状态切换样式 -->
-        <input type="checkbox" name="isCompleted" />
-        <!-- TODO: 对应上面的input + 变量名 -->
-        <label>itemName</label>
+      <li class="todo" v-for="item in todoStore.itemList" :key="item.id">
+        <!-- FIN: 根据checked状态切换样式 -->
+        <input
+          type="checkbox"
+          name="isCompleted"
+          :checked="item.isCompleted"
+          @change="todoStore.toggleItem(item.id)"
+        />
+        <!-- FIN: 对应上面的input + 变量名 -->
+        <label
+          :for="item.id"
+          :class="item.isCompleted ? 'completed' : 'incomplete'"
+          >{{ item.text }}</label
+        >
       </li>
     </ul>
 
-    <!-- TODO: -->
-    <form class="addForm">
-      <!-- 下面的输入框绑定 -->
-      <label for="add">Add todo</label>
+    <!-- FIN: -->
+    <form class="addForm" @submit.prevent="addItem">
       <div class="sl">
-        <!-- TODO: 绑变量 -->
-        <input type="text" name="add" id="add" />
+        <!-- FIN: 绑变量 -->
+        <input
+          type="text"
+          name="add"
+          id="add"
+          v-model="curItem"
+          placeholder="Add a Todo Item"
+          autocomplete="off"
+        />
         <button type="submit">Add</button>
       </div>
     </form>
