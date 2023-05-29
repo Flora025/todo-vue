@@ -1,6 +1,6 @@
 # Todo App
 
-<img src="./src/assets/td-img.png" alt="todo" style="zoom: 50%;" />
+<img src="./src/assets/td-img.png" alt="todo" style="zoom: 33%;" />
 
 ## Features
 
